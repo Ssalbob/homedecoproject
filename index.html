@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoomFit - 나만의 방 설계 도우미</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+      color: #3f342b;
+      background: #fbf4ea;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #f8dfc4, #fdf7ee 55%, #e8f1de);
+      border-bottom: 1px solid #ead8c5;
+    }
+
+    .header-inner {
+      width: min(1000px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 44px;
+    }
+
+    .top-menu {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 42px;
+    }
+
+    .logo {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .menu-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .menu-links a {
+      padding: 8px 12px;
+      border: 1px solid rgba(132, 93, 58, 0.28);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .hero {
+      max-width: 760px;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 7vw, 64px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 680px;
+      font-size: 18px;
+      color: #67564a;
+    }
+
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 56px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 22px;
+      border: 1px solid #ead8c5;
+      border-radius: 8px;
+      background: #fffaf3;
+      box-shadow: 0 12px 30px rgba(104, 77, 49, 0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label,
+    .field-title {
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid #d9c4ac;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #3f342b;
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 3px solid #f1cda6;
+      border-color: #b67a43;
+    }
+
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .hidden-field {
+      display: none;
+    }
+
+    .hidden-field.is-visible {
+      display: block;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px;
+      border: 1px solid #ead8c5;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .choice input {
+      width: auto;
+      min-height: auto;
+      accent-color: #b67a43;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 8px;
+      background: #9f6b3f;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #875735;
+    }
+
+    .secondary-button {
+      background: #efe1d0;
+      color: #4c3a2d;
+    }
+
+    .secondary-button:hover {
+      background: #e2cfba;
+    }
+
+    .result-box {
+      min-height: 220px;
+      padding: 18px;
+      border: 1px dashed #c8a17d;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .empty-result {
+      margin: 0;
+      color: #7b6a5e;
+    }
+
+    .result-title {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .result-list {
+      padding-left: 20px;
+      margin: 10px 0 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .stat {
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8efe5;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 14px;
+      color: #76543a;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 3px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .room-preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      margin-top: 16px;
+      border: 2px solid #b98c64;
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(185, 140, 100, 0.14) 1px, transparent 1px),
+        linear-gradient(rgba(185, 140, 100, 0.14) 1px, transparent 1px),
+        #fffaf3;
+      background-size: 32px 32px;
+      overflow: hidden;
+    }
+
+    .furniture {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border: 1px solid rgba(72, 52, 36, 0.2);
+      border-radius: 6px;
+      background: #d9a86f;
+      color: #3f342b;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .furniture small {
+      display: block;
+      margin-top: 2px;
+      color: rgba(63, 52, 43, 0.78);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .furniture.bed {
+      left: 5%;
+      top: 8%;
+      width: 34%;
+      height: 28%;
+      background: #f0b9a6;
+    }
+
+    .furniture.desk {
+      right: 6%;
+      top: 9%;
+      width: 28%;
+      height: 18%;
+      background: #e7c37a;
+    }
+
+    .furniture.chair {
+      right: 15%;
+      top: 31%;
+      width: 14%;
+      height: 13%;
+      background: #cfdcae;
+    }
+
+    .furniture.closet {
+      left: 5%;
+      bottom: 8%;
+      width: 20%;
+      height: 31%;
+      background: #caa989;
+    }
+
+    .furniture.bookcase {
+      right: 7%;
+      bottom: 9%;
+      width: 18%;
+      height: 26%;
+      background: #c4d6d0;
+    }
+
+    .furniture.etc {
+      left: 42%;
+      bottom: 13%;
+      width: 17%;
+      height: 14%;
+      background: #ecd4a8;
+    }
+
+    .furniture.lamp {
+      left: 41%;
+      top: 8%;
+      width: 12%;
+      height: 12%;
+      background: #f3df8c;
+    }
+
+    .furniture.rug {
+      left: 34%;
+      top: 48%;
+      width: 31%;
+      height: 22%;
+      background: #d7c2e8;
+    }
+
+    .furniture.table {
+      left: 44%;
+      top: 34%;
+      width: 16%;
+      height: 12%;
+      background: #f1cf9d;
+    }
+
+    .furniture.shelf {
+      right: 29%;
+      bottom: 8%;
+      width: 14%;
+      height: 22%;
+      background: #b9d8b8;
+    }
+
+    .furniture.drawer {
+      left: 28%;
+      bottom: 8%;
+      width: 14%;
+      height: 18%;
+      background: #d0b99b;
+    }
+
+    .layout-note {
+      margin: 10px 0 0;
+      color: #6c5b4e;
+      font-size: 13px;
+    }
+
+    .tips {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .tip {
+      padding: 16px;
+      border: 1px solid #ead8c5;
+      border-radius: 8px;
+      background: #fffaf3;
+    }
+
+    .tip h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .tip p {
+      margin: 0;
+      color: #6c5b4e;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .links a {
+      padding: 10px 13px;
+      border-radius: 8px;
+      background: #e8f1de;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .warning {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #ffe4d8;
+      color: #7d331c;
+      font-weight: 800;
+    }
+
+    .analysis-box {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #f4f7ed;
+      border: 1px solid #d7e2c7;
+    }
+
+    .analysis-box h4 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .analysis-box p {
+      margin: 8px 0 0;
+    }
+
+    footer {
+      padding: 26px 16px;
+      text-align: center;
+      color: #7b6a5e;
+      background: #f4e7d8;
+    }
+
+    @media (max-width: 820px) {
+      .layout,
+      .tips {
+        grid-template-columns: 1fr;
+      }
+
+      .top-menu {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .menu-links {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .header-inner,
+      main {
+        width: min(100% - 24px, 1100px);
+      }
+
+      .form-grid,
+      .choices,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .hero h2 {
+        font-size: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header" id="top">
+    <div class="header-inner">
+      <nav class="top-menu" aria-label="주요 메뉴">
+        <h1 class="logo">RoomFit</h1>
+        <div class="menu-links">
+          <a href="#planner">방 설계</a>
+          <a href="#tips">인테리어 팁</a>
+          <a href="#links">참고 링크</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <h2>나만의 방 설계 도우미</h2>
+        <p>방 크기, 예산, 생활 방식, 선호 분위기를 입력하면 어울리는 가구와 방 배치를 추천해 줍니다.</p>
+      </section>
+    </div>
+  </header>
+
+  <main>
+    <section class="layout" id="planner">
+      <div class="panel">
+        <h2 class="section-title">사용자 정보 입력</h2>
+        <form id="roomForm">
+          <div class="form-grid">
+            <!-- 방 모양 -->
+<div class="field">
+  <label for="roomShape">방 모양</label>
+  <select id="roomShape">
+    <option value="square">정사각형</option>
+    <option value="rectangle">직사각형</option>
+    <option value="lshape">L자형</option>
+    <option value="custom">직접 그리기</option>
+  </select>
+</div>
+
+<!-- 문 위치 -->
+<div class="field">
+  <label for="doorPosition">문 위치</label>
+  <select id="doorPosition">
+    <option value="top">위</option>
+    <option value="bottom">아래</option>
+    <option value="left">왼쪽</option>
+    <option value="right">오른쪽</option>
+  </select>
+</div>
+
+<!-- 창문 위치 -->
+<div class="field">
+  <label for="windowPosition">창문 위치</label>
+  <select id="windowPosition">
+    <option value="top">위</option>
+    <option value="bottom">아래</option>
+    <option value="left">왼쪽</option>
+    <option value="right">오른쪽</option>
+  </select>
+</div>
+<div class="field full">
+
+<label>방 직접 그리기</label>
+
+<p style="margin-top:5px; color:#666;">
+회색 칸을 클릭하면 벽이 생기고 다시 누르면 지워집니다.
+</p>
+
+<div id="roomGrid"></div>
+
+</div>
+            <div class="field">
+              <label for="userName">이름 또는 닉네임</label>
+              <input type="text" id="userName" placeholder="예: 민지">
+            </div>
+
+            <div class="field">
+              <label for="purpose">사용 목적</label>
+              <select id="purpose">
+                <option value="">선택해 주세요</option>
+                <option value="study">공부 중심</option>
+                <option value="rest">휴식 중심</option>
+                <option value="game">게임 중심</option>
+                <option value="hobby">취미 활동 중심</option>
+                <option value="other">기타</option>
+              </select>
+              <input type="text" id="customPurpose" class="hidden-field" placeholder="원하는 사용 목적을 입력해 주세요">
+            </div>
+
+            <div class="field">
+              <label for="roomWidth">방 가로 길이(m)</label>
+              <input type="number" id="roomWidth" min="1" step="0.1" placeholder="예: 3.5">
+            </div>
+
+            <div class="field">
+              <label for="roomHeight">방 세로 길이(m)</label>
+              <input type="number" id="roomHeight" min="1" step="0.1" placeholder="예: 4">
+            </div>
+
+            <div class="field full">
+              <label for="budget">예산(원)</label>
+              <input type="number" id="budget" min="0" step="10000" placeholder="예: 500000">
+            </div>
+
+            <div class="field full">
+              <p class="field-title">선호 분위기</p>
+              <div class="choices">
+                <label class="choice">
+                  <input type="radio" name="mood" value="warm">
+                  따뜻한 분위기
+                </label>
+                <label class="choice">
+                  <input type="radio" name="mood" value="modern">
+                  모던한 분위기
+                </label>
+                <label class="choice">
+                  <input type="radio" name="mood" value="clean">
+                  깔끔한 분위기
+                </label>
+                <label class="choice">
+                  <input type="radio" name="mood" value="cozy">
+                  아늑한 분위기
+                </label>
+                <label class="choice">
+                  <input type="radio" name="mood" value="other">
+                  기타
+                </label>
+              </div>
+              <input type="text" id="customMood" class="hidden-field" placeholder="원하는 분위기를 입력해 주세요">
+            </div>
+
+            <div class="field full">
+              <p class="field-title">필요한 가구</p>
+              <div class="choices">
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="bed">
+                  침대
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="desk">
+                  책상
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="chair">
+                  의자
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="closet">
+                  옷장
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="bookcase">
+                  책장
+                </label>
+                <label class="choice">
+                  <input type="checkbox" name="furniture" value="etc">
+                  기타 가구
+                </label>
+              </div>
+              <input type="text" id="customFurniture" class="hidden-field" placeholder="필요한 기타 가구를 입력해 주세요">
+            </div>
+
+            <div class="field full">
+              <label for="extraRequirements">기타 요구사항</label>
+              <textarea id="extraRequirements" placeholder="예: 침대는 창문과 멀리 두기&#10;수납공간 많이 만들기&#10;게임 장비 놓을 자리 필요"></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit">추천받기</button>
+            <button type="button" class="secondary-button" id="randomButton">랜덤 방 꾸미기</button>
+            <button type="reset" class="secondary-button" id="resetButton">처음부터</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="panel" aria-live="polite">
+        <h2 class="section-title">추천 결과</h2>
+        <div class="result-box" id="resultBox">
+          <p class="empty-result">왼쪽 정보를 입력하고 추천받기 버튼을 눌러 주세요.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section id="tips" style="margin-top: 34px;">
+      <h2 class="section-title">인테리어 팁</h2>
+      <div class="tips">
+        <article class="tip">
+          <h3>작은 방</h3>
+          <p>침대 아래 수납함이나 벽 선반을 사용하면 바닥 공간을 더 넓게 쓸 수 있습니다.</p>
+        </article>
+        <article class="tip">
+          <h3>공부방</h3>
+          <p>책상은 창가 근처에 두고, 자주 쓰는 물건은 손이 닿는 곳에 정리하는 것이 좋습니다.</p>
+        </article>
+        <article class="tip">
+          <h3>휴식 공간</h3>
+          <p>조명을 너무 밝게 하지 않고 러그나 쿠션을 더하면 방이 더 아늑해 보입니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="links" style="margin-top: 34px;">
+      <h2 class="section-title">참고 링크</h2>
+      <div class="links">
+        <a href="https://www.ikea.com/kr/ko/rooms/bedroom/" target="_blank" rel="noopener">IKEA 침실 아이디어</a>
+        <a href="https://www.pinterest.co.kr/search/pins/?q=room%20interior" target="_blank" rel="noopener">Pinterest 인테리어 참고</a>
+        <a href="https://colorhunt.co/" target="_blank" rel="noopener">Color Hunt 색 조합</a>
+        <a href="#top">처음으로 돌아가기</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    RoomFit - HTML, CSS, JavaScript 기초로 만든 맞춤 방 설계 웹페이지
+  </footer>
+
+  <script>
+    const furnitureData = {
+      bed: {
+        name: "침대",
+        price: 220000,
+        area: 2.2,
+        reason: "수면과 휴식을 위한 중심 가구입니다."
+      },
+      desk: {
+        name: "책상",
+        price: 120000,
+        area: 1.1,
+        reason: "공부나 작업을 할 때 꼭 필요한 가구입니다."
+      },
+      chair: {
+        name: "의자",
+        price: 60000,
+        area: 0.5,
+        reason: "책상과 함께 사용하면 활동 공간이 편해집니다."
+      },
+      closet: {
+        name: "옷장",
+        price: 180000,
+        area: 1.4,
+        reason: "옷과 생활용품을 깔끔하게 정리할 수 있습니다."
+      },
+      bookcase: {
+        name: "책장",
+        price: 90000,
+        area: 0.8,
+        reason: "책과 소품을 정리해 방을 더 단정하게 만듭니다."
+      },
+      etc: {
+        name: "기타 가구",
+        price: 70000,
+        area: 0.7,
+        reason: "사용자의 취미나 생활 방식에 맞게 공간을 보완합니다."
+      },
+      lamp: {
+        name: "스탠드 조명",
+        price: 45000,
+        area: 0.2,
+        reason: "공부나 휴식 공간에 필요한 밝기와 분위기를 더합니다."
+      },
+      rug: {
+        name: "러그",
+        price: 50000,
+        area: 1.2,
+        reason: "방 중앙 공간을 부드럽게 나누고 아늑한 느낌을 줍니다."
+      },
+      table: {
+        name: "작은 테이블",
+        price: 65000,
+        area: 0.5,
+        reason: "침대 옆이나 중앙에 두면 자주 쓰는 물건을 올려두기 좋습니다."
+      },
+      shelf: {
+        name: "벽 선반",
+        price: 40000,
+        area: 0.1,
+        reason: "바닥 공간을 많이 차지하지 않고 소품을 정리할 수 있습니다."
+      },
+      drawer: {
+        name: "서랍장",
+        price: 85000,
+        area: 0.7,
+        reason: "작은 물건을 숨겨서 보관해 방을 깔끔하게 유지합니다."
+      }
+    };
+
+    const furniturePositions = {
+      bed: "왼쪽 위 벽면",
+      desk: "오른쪽 위 창가",
+      chair: "책상 앞",
+      closet: "왼쪽 아래 벽면",
+      bookcase: "오른쪽 아래 벽면",
+      etc: "중앙 아래",
+      lamp: "침대와 책상 사이",
+      rug: "방 중앙",
+      table: "침대 옆 중앙",
+      shelf: "오른쪽 벽면",
+      drawer: "옷장 옆"
+    };
+
+    const purposeText = {
+      study: "공부 중심",
+      rest: "휴식 중심",
+      game: "게임 중심",
+      hobby: "취미 활동 중심"
+    };
+
+    const moodText = {
+      warm: "따뜻한 분위기",
+      modern: "모던한 분위기",
+      clean: "깔끔한 분위기",
+      cozy: "아늑한 분위기"
+    };
+
+    const moodAdvice = {
+      warm: "우드 색상 가구와 크림색 침구를 사용하면 따뜻한 느낌을 줄 수 있습니다.",
+      modern: "검정, 흰색, 회색을 중심으로 가구 수를 줄이면 모던한 분위기가 살아납니다.",
+      clean: "밝은 색 수납장과 숨김 수납을 활용하면 깔끔한 인상을 만들 수 있습니다.",
+      cozy: "간접 조명, 러그, 쿠션을 더하면 편안하고 아늑한 느낌이 강해집니다."
+    };
+
+    const purposeAdvice = {
+      study: "책상은 창가나 벽 쪽에 두고, 침대와 떨어뜨리면 집중하기 좋습니다.",
+      rest: "침대를 중심으로 배치하고 조명과 작은 테이블을 가까이 두는 구성이 좋습니다.",
+      game: "책상과 의자 주변에 콘센트, 수납함, 조명을 함께 두면 사용하기 편합니다.",
+      hobby: "가운데 활동 공간을 남기고 벽 쪽으로 수납 가구를 배치하는 것이 좋습니다."
+    };
+
+    const roomForm = document.getElementById("roomForm");
+    const resultBox = document.getElementById("resultBox");
+    const randomButton = document.getElementById("randomButton");
+    const resetButton = document.getElementById("resetButton");
+    const purposeSelect = document.getElementById("purpose");
+    const customPurposeInput = document.getElementById("customPurpose");
+    const customMoodInput = document.getElementById("customMood");
+    const customFurnitureInput = document.getElementById("customFurniture");
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function updateCustomPurposeField() {
+      const isOtherPurpose = purposeSelect.value === "other";
+      customPurposeInput.classList.toggle("is-visible", isOtherPurpose);
+      customPurposeInput.disabled = !isOtherPurpose;
+
+      if (!isOtherPurpose) {
+        customPurposeInput.value = "";
+      }
+    }
+
+    function updateCustomFurnitureField() {
+      const etcFurniture = document.querySelector('input[name="furniture"][value="etc"]');
+      const isEtcSelected = etcFurniture && etcFurniture.checked;
+      customFurnitureInput.classList.toggle("is-visible", isEtcSelected);
+      customFurnitureInput.disabled = !isEtcSelected;
+
+      if (!isEtcSelected) {
+        customFurnitureInput.value = "";
+      }
+    }
+
+    function updateCustomMoodField() {
+      const isOtherMood = getSelectedMood() === "other";
+      customMoodInput.classList.toggle("is-visible", isOtherMood);
+      customMoodInput.disabled = !isOtherMood;
+
+      if (!isOtherMood) {
+        customMoodInput.value = "";
+      }
+    }
+
+    function getSelectedFurniture() {
+      return Array.from(document.querySelectorAll('input[name="furniture"]:checked')).map(function(input) {
+        return input.value;
+      });
+    }
+
+    function getSelectedMood() {
+      const selected = document.querySelector('input[name="mood"]:checked');
+      return selected ? selected.value : "";
+    }
+
+    function getPurposeLabel(purpose, customPurpose) {
+      if (purpose === "other") {
+        return customPurpose;
+      }
+
+      return purposeText[purpose];
+    }
+
+    function getPurposeAdvice(purpose, customPurpose) {
+      if (purpose === "other") {
+        return customPurpose + "에 맞게 자주 쓰는 물건은 가까운 곳에 두고, 이동 동선이 막히지 않도록 벽 쪽부터 배치하는 것이 좋습니다.";
+      }
+
+      return purposeAdvice[purpose];
+    }
+
+    function getMoodLabel(mood, customMood) {
+      if (mood === "other") {
+        return customMood;
+      }
+
+      return moodText[mood];
+    }
+
+    function getMoodAdvice(mood, customMood) {
+      if (mood === "other") {
+        return customMood + " 느낌이 잘 나도록 색상, 조명, 소품을 한 방향으로 맞추면 좋습니다.";
+      }
+
+      return moodAdvice[mood];
+    }
+
+    function formatMoney(amount) {
+      return amount.toLocaleString("ko-KR") + "원";
+    }
+
+    function makeRoomPreview(recommendedFurniture) {
+      const furnitureHtml = recommendedFurniture.map(function(item) {
+        return '<div class="furniture ' + item.key + '">' + escapeHtml(item.name) + '<small>' + escapeHtml(item.position) + '</small></div>';
+      }).join("");
+
+      return '<div class="room-preview" aria-label="추천 가구 위치 전개도">' + furnitureHtml + '</div><p class="layout-note">전개도는 위에서 내려다본 간단한 배치입니다. 문구는 각 가구의 추천 위치를 뜻합니다.</p>';
+    }
+
+    function addUniqueFurniture(list, key) {
+      if (!list.includes(key)) {
+        list.push(key);
+      }
+    }
+
+    function makeRecommendedFurniture(purpose, mood, roomArea, selectedFurniture, customFurniture) {
+      const recommendedKeys = [];
+
+      selectedFurniture.forEach(function(item) {
+        addUniqueFurniture(recommendedKeys, item);
+      });
+
+      if (purpose === "study") {
+        ["desk", "chair", "bookcase", "lamp", "shelf"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+      } else if (purpose === "rest") {
+        ["bed", "table", "lamp", "rug", "closet"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+      } else if (purpose === "game") {
+        ["desk", "chair", "shelf", "drawer", "lamp"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+      } else if (purpose === "hobby") {
+        ["desk", "bookcase", "shelf", "table", "rug"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+      } else {
+        ["desk", "chair", "closet", "shelf", "lamp"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+      }
+
+      if (mood === "warm" || mood === "cozy" || mood === "other") {
+        addUniqueFurniture(recommendedKeys, "rug");
+        addUniqueFurniture(recommendedKeys, "lamp");
+      }
+
+      if (mood === "clean" || mood === "modern") {
+        addUniqueFurniture(recommendedKeys, "drawer");
+        addUniqueFurniture(recommendedKeys, "shelf");
+      }
+
+      if (roomArea < 10) {
+        ["bed", "desk", "chair", "closet", "shelf", "lamp", "drawer", "bookcase"].forEach(function(item) {
+          addUniqueFurniture(recommendedKeys, item);
+        });
+        return recommendedKeys.filter(function(item) {
+          return item !== "rug" && item !== "table";
+        }).slice(0, 7).map(function(key) {
+          return makeFurnitureItem(key, customFurniture);
+        });
+      }
+
+      if (roomArea >= 14) {
+        addUniqueFurniture(recommendedKeys, "table");
+        addUniqueFurniture(recommendedKeys, "rug");
+      }
+
+      return recommendedKeys.slice(0, 8).map(function(key) {
+        return makeFurnitureItem(key, customFurniture);
+      });
+    }
+
+    function makeFurnitureItem(key, customFurniture) {
+      const data = furnitureData[key];
+
+      return {
+        key,
+        name: key === "etc" && customFurniture ? customFurniture : data.name,
+        price: data.price,
+        area: data.area,
+        reason: data.reason,
+        position: furniturePositions[key]
+      };
+    }
+
+    function getSpaceMessage(roomArea, usedArea) {
+      const useRate = usedArea / roomArea;
+
+      if (useRate >= 0.58) {
+        return {
+          score: "좁음",
+          text: "가구가 많은 편이라 이동 공간이 부족할 수 있습니다. 수납형 가구나 접이식 가구를 추천합니다."
+        };
+      }
+
+      if (useRate >= 0.38) {
+        return {
+          score: "적당함",
+          text: "가구와 빈 공간의 균형이 괜찮습니다. 생활 동선을 생각해서 벽 쪽으로 배치하면 좋습니다."
+        };
+      }
+
+      return {
+        score: "여유 있음",
+        text: "가구를 배치해도 빈 공간이 충분합니다. 러그나 작은 테이블을 추가해도 좋습니다."
+      };
+    }
+
+    function recommendExtraFurniture(purpose, selectedFurniture, recommendedFurniture) {
+      const suggestions = [];
+
+      if (selectedFurniture.length === 0) {
+        suggestions.push("가구를 직접 선택하지 않아도 사용 목적과 분위기에 맞춰 기본 가구를 자동으로 추천했습니다.");
+      }
+
+      if (purpose === "study") {
+        suggestions.push("공부 중심 방에는 책상, 의자, 조명을 한쪽 벽면에 모아 집중 공간을 만드는 것이 좋습니다.");
+      }
+
+      if (purpose === "rest") {
+        suggestions.push("휴식 중심 방에는 침대를 중심으로 두고, 작은 테이블과 조명을 가까이 배치하는 것이 좋습니다.");
+      }
+
+      if (purpose === "hobby" || purpose === "game") {
+        suggestions.push("장비나 취미용품이 흩어지지 않도록 책장, 선반, 서랍장을 벽 쪽에 두는 구성이 좋습니다.");
+      }
+
+      if (purpose === "other") {
+        suggestions.push("직접 입력한 사용 목적에 맞춰 필요한 물건을 먼저 정하고, 남는 공간에는 수납 가구를 더하는 것이 좋습니다.");
+      }
+
+      if (recommendedFurniture.length >= 7) {
+        suggestions.push("추천 가구가 많은 편이므로 벽 선반처럼 바닥을 덜 차지하는 가구를 우선 배치하면 좋습니다.");
+      }
+
+      if (suggestions.length === 0) {
+        suggestions.push("추천 가구 구성이 사용 목적과 잘 어울립니다.");
+      }
+
+      return suggestions;
+    }
+
+    function makeLocalResultAnalysis(name, roomArea, budget, totalPrice, purpose, purposeLabel, mood, moodLabel, recommendedFurniture, space) {
+      const budgetRate = totalPrice / budget;
+      let budgetAnalysis = "";
+      let layoutAnalysis = "";
+      let finalComment = "";
+
+      if (budgetRate > 1) {
+        budgetAnalysis = "현재 추천 가구의 예상 비용이 예산을 넘어서므로, 우선순위가 낮은 가구를 줄이거나 더 저렴한 제품을 선택하는 것이 좋습니다.";
+      } else if (budgetRate > 0.8) {
+        budgetAnalysis = "예산 안에는 들어오지만 남는 금액이 많지 않으므로, 추가 장식품을 고를 때는 가격을 신중히 비교하는 것이 좋습니다.";
+      } else {
+        budgetAnalysis = "예산에 여유가 있어 조명, 러그, 수납함 같은 작은 소품을 추가해도 부담이 적습니다.";
+      }
+
+      if (roomArea < 10) {
+        layoutAnalysis = "방 크기가 작은 편이므로 큰 가구는 벽 쪽에 붙이고, 가운데 이동 공간을 비워 두는 배치가 적합합니다.";
+      } else if (roomArea < 16) {
+        layoutAnalysis = "방 크기가 보통이므로 침대, 책상, 수납 가구를 기능별로 나누어 배치하면 생활 동선이 편해집니다.";
+      } else {
+        layoutAnalysis = "방 크기에 여유가 있어 공부 공간, 휴식 공간, 수납 공간을 구역별로 분리하기 좋습니다.";
+      }
+
+      if (purpose === "study") {
+        finalComment = "이 방은 집중력을 높이는 공부 공간으로 발전시키기 좋습니다. 책상 주변을 정리하기 쉽게 만드는 것이 핵심입니다.";
+      } else if (purpose === "rest") {
+        finalComment = "이 방은 편안한 휴식을 중심으로 꾸미기 좋습니다. 조명과 침구 색을 부드럽게 맞추면 완성도가 높아집니다.";
+      } else if (purpose === "game") {
+        finalComment = "이 방은 게임과 디지털 활동에 맞춘 공간으로 만들기 좋습니다. 책상 주변 배선 정리와 의자 선택이 중요합니다.";
+      } else if (purpose === "hobby") {
+        finalComment = "이 방은 취미 활동을 위한 다목적 공간으로 만들기 좋습니다. 자주 쓰는 물건을 쉽게 꺼낼 수 있는 수납이 중요합니다.";
+      } else {
+        finalComment = "이 방은 직접 입력한 목적에 맞춰 유연하게 꾸미기 좋습니다. 가장 자주 하는 활동을 기준으로 중심 공간을 정하는 것이 중요합니다.";
+      }
+
+      return `
+        <div class="analysis-box">
+          <h4>결과 분석</h4>
+          <p>${escapeHtml(name)}님의 방은 약 ${roomArea.toFixed(1)}㎡이며, 추천 가구는 ${recommendedFurniture.length}개입니다. 선택한 조건을 보면 <strong>${escapeHtml(purposeLabel)}</strong> 생활 방식과 <strong>${escapeHtml(moodLabel)}</strong>를 중요하게 생각하는 것으로 분석됩니다.</p>
+          <p>${layoutAnalysis}</p>
+          <p>${budgetAnalysis}</p>
+          <p>공간 활용도는 <strong>${space.score}</strong> 단계입니다. ${space.text}</p>
+          <p>${finalComment}</p>
+        </div>
+      `;
+    }
+
+    async function makeResultAnalysis(payload) {
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("AI 분석 요청에 실패했습니다.");
+        }
+
+        const data = await response.json();
+
+        if (!data.analysis) {
+          throw new Error("AI 분석 결과가 비어 있습니다.");
+        }
+
+        return `
+          <div class="analysis-box">
+            <h4>AI 결과 분석</h4>
+            <p>${data.analysis.replace(/\n/g, "</p><p>")}</p>
+          </div>
+        `;
+      } catch (error) {
+        return makeLocalResultAnalysis(
+          payload.userName,
+          payload.roomArea,
+          payload.budget,
+          payload.totalPrice,
+          payload.purpose,
+          payload.purposeLabel,
+          payload.mood,
+          payload.moodLabel,
+          payload.recommendedFurniture,
+          payload.space
+        );
+      }
+    }
+
+    async function showResult(event) {
+      event.preventDefault();
+
+      const userName = document.getElementById("userName").value.trim() || "사용자";
+      const roomWidth = Number(document.getElementById("roomWidth").value);
+      const roomHeight = Number(document.getElementById("roomHeight").value);
+      const budget = Number(document.getElementById("budget").value);
+      const purpose = purposeSelect.value;
+      const customPurpose = customPurposeInput.value.trim();
+      const customMood = customMoodInput.value.trim();
+      const customFurniture = customFurnitureInput.value.trim();
+      const extraRequirements = document.getElementById("extraRequirements").value.trim();
+      const mood = getSelectedMood();
+      const selectedFurniture = getSelectedFurniture();
+
+      if (!roomWidth || !roomHeight || !budget || !purpose || !mood) {
+        resultBox.innerHTML = '<p class="warning">방 크기, 예산, 사용 목적, 분위기를 모두 입력하거나 선택해 주세요.</p>';
+        return;
+      }
+
+      if (purpose === "other" && !customPurpose) {
+        resultBox.innerHTML = '<p class="warning">사용 목적에서 기타를 선택했다면 원하는 목적을 직접 입력해 주세요.</p>';
+        customPurposeInput.focus();
+        return;
+      }
+
+      if (mood === "other" && !customMood) {
+        resultBox.innerHTML = '<p class="warning">선호 분위기에서 기타를 선택했다면 원하는 분위기를 직접 입력해 주세요.</p>';
+        customMoodInput.focus();
+        return;
+      }
+
+      if (selectedFurniture.includes("etc") && !customFurniture) {
+        resultBox.innerHTML = '<p class="warning">기타 가구를 선택했다면 필요한 가구 이름을 직접 입력해 주세요.</p>';
+        customFurnitureInput.focus();
+        return;
+      }
+
+      const roomArea = roomWidth * roomHeight;
+      const purposeLabel = getPurposeLabel(purpose, customPurpose);
+      const moodLabel = getMoodLabel(mood, customMood);
+      const recommendedFurniture = makeRecommendedFurniture(purpose, mood, roomArea, selectedFurniture, customFurniture);
+      const totalPrice = recommendedFurniture.reduce(function(sum, item) {
+        return sum + item.price;
+      }, 0);
+      const usedArea = recommendedFurniture.reduce(function(sum, item) {
+        return sum + item.area;
+      }, 0);
+      const space = getSpaceMessage(roomArea, usedArea);
+      const furnitureNames = recommendedFurniture.map(function(item) {
+        return item.name;
+      });
+      const extraSuggestions = recommendExtraFurniture(purpose, selectedFurniture, recommendedFurniture);
+      const purposeLayoutAdvice = getPurposeAdvice(purpose, customPurpose);
+      const moodLayoutAdvice = getMoodAdvice(mood, customMood);
+      const budgetMessage = totalPrice > budget
+        ? '<p class="warning">예상 비용이 예산보다 ' + formatMoney(totalPrice - budget) + ' 높습니다. 가구 개수나 가격을 조정해 보세요.</p>'
+        : '<p>예산 안에서 구성할 수 있습니다. 남은 예산은 약 <strong>' + formatMoney(budget - totalPrice) + '</strong>입니다.</p>';
+      const analysisPayload = {
+        userName,
+        roomWidth,
+        roomHeight,
+        roomArea,
+        budget,
+        totalPrice,
+        purpose,
+        purposeLabel,
+        mood,
+        moodLabel,
+        selectedFurniture,
+        recommendedFurniture,
+        furnitureNames,
+        space,
+        extraSuggestions,
+        extraRequirements
+      };
+
+      resultBox.innerHTML = '<p class="empty-result">AI가 입력 조건을 분석하고 있습니다...</p>';
+      const analysisHtml = await makeResultAnalysis(analysisPayload);
+
+      resultBox.innerHTML = `
+        <h3 class="result-title">${escapeHtml(userName)}님의 추천 방 구성</h3>
+        <p><strong>${escapeHtml(purposeLabel)}</strong>과 <strong>${escapeHtml(moodLabel)}</strong>에 맞춘 방입니다.</p>
+
+        <div class="stats">
+          <div class="stat">
+            <strong>방 크기</strong>
+            <span>${roomArea.toFixed(1)}㎡</span>
+          </div>
+          <div class="stat">
+            <strong>예상 비용</strong>
+            <span>${formatMoney(totalPrice)}</span>
+          </div>
+          <div class="stat">
+            <strong>공간 활용도</strong>
+            <span>${space.score}</span>
+          </div>
+          <div class="stat">
+            <strong>추천 가구</strong>
+            <span>${recommendedFurniture.length}개</span>
+          </div>
+        </div>
+
+        ${budgetMessage}
+
+        <p><strong>추천 방 배치:</strong> ${escapeHtml(purposeLayoutAdvice)}</p>
+        <p><strong>분위기 추천:</strong> ${escapeHtml(moodLayoutAdvice)}</p>
+        <p><strong>공간 활용도 설명:</strong> ${space.text}</p>
+        ${extraRequirements ? '<p><strong>기타 요구사항:</strong> ' + escapeHtml(extraRequirements).replace(/\n/g, "<br>") + '</p>' : ''}
+
+        ${analysisHtml}
+
+        <p><strong>추천 가구 목록</strong></p>
+        <ul class="result-list">
+          ${recommendedFurniture.map(function(item) {
+            return `<li>${escapeHtml(item.name)} - ${escapeHtml(item.position)}: ${escapeHtml(item.reason)}</li>`;
+          }).join("")}
+        </ul>
+
+        <p><strong>추가 추천</strong></p>
+        <ul class="result-list">
+          ${extraSuggestions.map(function(text) {
+            return `<li>${text}</li>`;
+          }).join("")}
+        </ul>
+
+        ${makeRoomPreview(recommendedFurniture)}
+      `;
+    }
+
+    function randomizeRoom() {
+      const purposes = Object.keys(purposeText);
+      const moods = Object.keys(moodText);
+      const furnitureKeys = ["bed", "desk", "chair", "closet", "bookcase", "etc"];
+      const randomPurpose = purposes[Math.floor(Math.random() * purposes.length)];
+      const randomMood = moods[Math.floor(Math.random() * moods.length)];
+
+      document.getElementById("userName").value = "랜덤 사용자";
+      document.getElementById("roomWidth").value = (Math.random() * 2 + 2.8).toFixed(1);
+      document.getElementById("roomHeight").value = (Math.random() * 2 + 3.0).toFixed(1);
+      document.getElementById("budget").value = Math.floor((Math.random() * 50 + 35) / 5) * 50000;
+      purposeSelect.value = randomPurpose;
+      updateCustomPurposeField();
+
+      document.querySelectorAll('input[name="mood"]').forEach(function(input) {
+        input.checked = input.value === randomMood;
+      });
+      updateCustomMoodField();
+
+      document.querySelectorAll('input[name="furniture"]').forEach(function(input) {
+        input.checked = false;
+      });
+
+      const shuffled = furnitureKeys.sort(function() {
+        return Math.random() - 0.5;
+      });
+      const selectedCount = Math.floor(Math.random() * 3) + 3;
+      shuffled.slice(0, selectedCount).forEach(function(item) {
+        document.querySelector('input[name="furniture"][value="' + item + '"]').checked = true;
+      });
+      updateCustomFurnitureField();
+
+      if (document.querySelector('input[name="furniture"][value="etc"]').checked) {
+        customFurnitureInput.value = "작은 테이블";
+      }
+
+      roomForm.dispatchEvent(new Event("submit"));
+    }
+
+    roomForm.addEventListener("submit", showResult);
+    purposeSelect.addEventListener("change", updateCustomPurposeField);
+    document.querySelectorAll('input[name="furniture"]').forEach(function(input) {
+      input.addEventListener("change", updateCustomFurnitureField);
+    });
+    document.querySelectorAll('input[name="mood"]').forEach(function(input) {
+      input.addEventListener("change", updateCustomMoodField);
+    });
+    randomButton.addEventListener("click", randomizeRoom);
+    resetButton.addEventListener("click", function() {
+      resultBox.innerHTML = '<p class="empty-result">왼쪽 정보를 입력하고 추천받기 버튼을 눌러 주세요.</p>';
+      setTimeout(function() {
+        updateCustomPurposeField();
+        updateCustomMoodField();
+        updateCustomFurnitureField();
+      }, 0);
+    });
+    updateCustomPurposeField();
+    updateCustomMoodField();
+    updateCustomFurnitureField();
+  </script>
+</body>
+</html>
